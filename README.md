@@ -1,10 +1,8 @@
-# disweb
+# TowBook Webapp
 
-A Discord desktop client for raspberry pi's.
+A TowBook desktop client for Gay's Tow inc.
 
 # Features:
-Shows when you have pings,
-
 Small file size,
 
 Custom notifications,
@@ -13,8 +11,8 @@ And fully open-source!
 
 # Install:
 
-Download the latest appimage from the <a href="https://github.com/oxmc/disweb/releases/Latest">releases page</a>
+Download the latest installer from the <a href="https://github.com/oxmc/TowBookWebapp/releases/Latest">releases page</a>
 
 # Uninstall:
 
-just delete the appimage.
+goto uninstall programs and select uninstall "TowBookWebapp"

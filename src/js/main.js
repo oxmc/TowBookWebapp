@@ -88,30 +88,31 @@ function Ready() {
     UpdatingWindow.close();
     SplashWindow.close();
     mainWindow.show();
-    // "Red dot" and "Ping" tray icon
-    const contents = mainWindow.webContents
-    mainWindow.webContents.on('page-favicon-updated', (event, favicons) => {
-      //console.log(event);
-      //console.log(favicons);
-      const favstring = JSON.stringify(favicons);
-      const nojson1 = favstring.replace(/\"/g, "");
-      const nojson2 = nojson1.replace(/\'/g, "");
-      const nojson3 = nojson2.replace(/\[/g, "");
-      const nobase64 = nojson3.replace(/\]/g, "");
-      //const fav = nobase64
-      const fav2 = nobase64.replace(/^data:image\/png;base64,/,"")
-      var buf = new Buffer(fav2, 'base64');
-      
-      fs.writeFile(`${userHomeDir}/.config/${appname}/downloads/icons/favicon.png`, buf, 'base64', function(err) {
-        console.log(err)
+    if (config.getpagefavicon == "true") {
+      // "Red dot" and "Ping" tray icon
+      const contents = mainWindow.webContents
+      mainWindow.webContents.on('page-favicon-updated', (event, favicons) => {
+        //console.log(event);
+        //console.log(favicons);
+        const favstring = JSON.stringify(favicons);
+        const nojson1 = favstring.replace(/\"/g, "");
+        const nojson2 = nojson1.replace(/\'/g, "");
+        const nojson3 = nojson2.replace(/\[/g, "");
+        const nobase64 = nojson3.replace(/\]/g, "");
+        //const fav = nobase64
+        const fav2 = nobase64.replace(/^data:image\/png;base64,/,"")
+        var buf = new Buffer(fav2, 'base64');
+        fs.writeFile(`${userconfigdir}/downloads/icons/favicon.png`, buf, 'base64', function(err) {
+          console.log(err)
+        });
+        setTimeout(async function () {
+          seticon(`${userconfigdir}/downloads/icons/favicon.png`)
+        }, 2000)
       });
-      setTimeout(async function () {
-        seticon(`${userHomeDir}/.config/${appname}/downloads/icons/favicon.png`)
-      }, 2000)
-    });
-    app.on('browser-window-focus', () => {
-      seticon(`${userHomeDir}/.config/${appname}/downloads/icons/favicon.png`)
-    });
+      app.on('browser-window-focus', () => {
+        seticon(`${userconfigdir}/downloads/icons/favicon.png`)
+      });
+    }
   }
 }
 
@@ -205,7 +206,7 @@ var contrib = require(appdir + '/json/contributors.json') // Read contributors.j
 var repoLink = packageJson.repository.url
 var webLink = repoLink.substring(repoLink.indexOf("+")+1)
 var serverVerUrl = config.serververurl
-const userHomeDir = os.homedir();
+const userconfigdir = app.getPath('userData')
 
 //Update window sends signals to main.js
 ipcMain.on('synchronous-message', (event, arg) => {
@@ -227,31 +228,32 @@ console.log('jsondir: ' + appdir + "/json");
 console.log('icondir: ' + icondir);
 
 //Main
-//Make required dirs
-const faviconpath = `${userHomeDir}/.config/${appname}/downloads/icons`
-try {
-  if (fs.existsSync(`${userHomeDir}/.config/${appname}`)) {
-    fs.copyFileSync(`${icondir}/app.png`, `${userHomeDir}/.config/${appname}/app.png`);
+if (config.getpagefavicon == "true") {
+  //Make required dirs
+  const faviconpath = `${userconfigdir}/downloads/icons`
+  try {
+    if (fs.existsSync(`${userconfigdir}`)) {
+      fs.copyFileSync(`${icondir}/app.png`, `${userconfigdir}/downloads/icons/favicon.png`);
+    }
+  }
+  catch {
+    faviconpath.split('/').reduce(
+      (directories, directory) => {
+        directories += `${directory}/`;
+
+        if (!fs.existsSync(directories)) {
+          fs.mkdirSync(directories);
+        }
+
+        return directories;
+     },
+    '',
+    );
+  }
+  finally {
+    fs.copyFileSync(`${icondir}/app.png`, `${userconfigdir}/downloads/icons/favicon.png`);
   }
 }
-catch {
-  faviconpath.split('/').reduce(
-    (directories, directory) => {
-      directories += `${directory}/`;
-
-      if (!fs.existsSync(directories)) {
-        fs.mkdirSync(directories);
-      }
-
-      return directories;
-   },
-  '',
-  );
-}
-finally {
-  fs.copyFileSync(`${icondir}/app.png`, `${userHomeDir}/.config/${appname}/app.png`);
-}
-
 // "About" information
 var appAuthor = packageJson.author.name
 
@@ -297,7 +299,7 @@ const createTray = () => {
   tray.setContextMenu(trayMenu)
   const aboutWindow = app.setAboutPanelOptions({
 	  applicationName: appname,
-	  iconPath: `${userHomeDir}/.config/${appname}/app.png`,
+	  iconPath: `${userconfigdir}/app.png`,
 	  applicationVersion: 'Version: ' + appversion,
 	  authors: appContributors,
 	  website: webLink,

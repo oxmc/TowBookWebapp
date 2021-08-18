@@ -1,5 +1,6 @@
 {
   "url": "https://discord.com/app/",
   "madefor": "Pi-Ware",
-  "serververurl": "https://raw.githubusercontent.com/oxmc/disweb/master/package.json"
+  "serververurl": "https://raw.githubusercontent.com/oxmc/disweb/master/package.json",
+  "getpagefavicon": "true"
 }

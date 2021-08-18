@@ -1,6 +1,6 @@
 {
-  "url": "https://discord.com/app/",
-  "madefor": "Pi-Ware",
-  "serververurl": "https://raw.githubusercontent.com/oxmc/disweb/master/package.json",
-  "getpagefavicon": "true"
+  "url": "https://app.towbook.com/Security/Login.aspx?small=1",
+  "madefor": "Gay's Tow inc.",
+  "serververurl": "https://raw.githubusercontent.com/oxmc/TowBookWebapp/master/package.json",
+  "getpagefavicon": "false"
 }
